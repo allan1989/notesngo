@@ -1,0 +1,50 @@
+<app-header></app-header>
+<div>
+  <div class="container-xxl my-4">
+    <div class="row bg-light border rounded-3">
+      <div class="col-12">
+        <div class="d-flex align-items-center">
+          <button (click)="showAddEditForm()" type="button" class="btn btn-outline-secondary text-black my-2">Créer une
+            note!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-xxl">
+    <div class="row">
+      <div class="col-3">
+        <p>Priorités: </p>
+        <div class="list-group">
+          <li class="list-group-item p-0">
+            <a [routerLink]="['/notes', priorities.HAUTE]"
+              [ngClass]="{'bg-light': this.router.url.includes(priorities.HAUTE)}" style="height: 78px;" class="d-block text-decoration-none 
+              list-group-item-action px-2 py-2">{{ 'Haute' }}</a>
+          </li>
+          <li class="list-group-item p-0">
+            <a [routerLink]="['/notes', priorities.ELEVEE]"
+              [ngClass]="{'bg-light': this.router.url.includes(priorities.ELEVEE)}" style="height: 78px;" class="d-block text-decoration-none list-group-item-action px-2 
+              py-2">{{ 'Elevée' }}</a>
+          </li>
+          <li class="list-group-item p-0">
+            <a [routerLink]="['/notes', priorities.MOYENNE]"
+              [ngClass]="{'bg-light': this.router.url.includes(priorities.MOYENNE)}" style="height: 78px;"
+              class="d-block text-decoration-none list-group-item-action px-2 py-2">{{ 'Moyenne'
+              }}</a>
+          </li>
+          <li class="list-group-item p-0">
+            <a [routerLink]="['/notes', priorities.BASSE]"
+              [ngClass]="{'bg-light': this.router.url.includes(priorities.BASSE)}" style="height: 78px;"
+              class="d-block text-decoration-none list-group-item-action px-2 py-2">{{ 'Basse'
+              }}</a>
+          </li>
+        </div>
+      </div>
+      <div class="col-9">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+<app-modal-add-edit-note></app-modal-add-edit-note>
+<app-toast></app-toast>
+<app-modal-remove-note></app-modal-remove-note>

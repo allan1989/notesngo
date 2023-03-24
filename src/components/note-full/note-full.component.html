@@ -1,0 +1,5 @@
+<p>Contenu:</p>
+<ng-container *ngFor="let note of note$ | async">
+  <p>{{ note.title }}</p>
+  <p>{{ note.body }}</p>
+</ng-container>

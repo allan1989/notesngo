@@ -1,0 +1,47 @@
+<ng-container *ngIf="showAddEditNoteModal$ | async">
+  <div *ngIf="( hasNotes$ | async)?.length === 0 || (showAddEditNoteModal$ | async)"
+    class="fixed-top modal-fullscreen bg-secondary bg-opacity-25">
+    <div class="position-absolute top-50 start-50 translate-middle bg-white p-4 rounded-3">
+      <ng-container>
+        <form #noteform [formGroup]="noteForm">
+          <div class="form-group">
+            <label for="priority">Titre :</label>
+            <input [ngClass]="{'is-invalid': submitted && noteForm.controls['title'].errors}" formControlName="title"
+              type="text" class="form-control" id="title" placeholder="Titre..." />
+            <div *ngIf="submitted && noteForm.controls['title'].errors?.['whitespace']" class="text-danger">Il faut
+              ajouter un
+              titre !</div>
+          </div>
+          <div class="form-group">
+            <label for="priority">Contenu :</label>
+            <textarea [ngClass]="{'is-invalid': submitted && noteForm.controls['body'].errors}" formControlName="body"
+              placeholder="Contenu..." class="form-control" rows="3" style="resize: none;"></textarea>
+            <div *ngIf="submitted && noteForm.controls['body'].errors?.['whitespace']" class="text-danger">Le contenu
+              est vide
+              !</div>
+          </div>
+          <div class="form-group">
+            <label for="priority">Priorité :</label>
+            <select [ngClass]="{'is-invalid': submitted && noteForm.controls['priority'].errors}"
+              formControlName="priority" class="form-control" id="priority">
+              <option value="{{prioritiesListValue.HAUTE}}">{{prioritiesListLabel.HAUTE}}</option>
+              <option value="{{prioritiesListValue.ELEVEE}}">{{prioritiesListLabel.ELEVEE}}</option>
+              <option value="{{prioritiesListValue.MOYENNE}}">{{prioritiesListLabel.MOYENNE}}</option>
+              <option value="{{prioritiesListValue.BASSE}}">{{prioritiesListLabel.BASSE}}</option>
+            </select>
+            <div *ngIf="submitted && noteForm.controls['priority'].errors?.['required']" class="text-danger">
+              Sélectionner une
+              priorité !</div>
+          </div>
+          <div class="mt-2 d-flex justify-content-between">
+            <button *ngIf="(isAddMode$ | async)" (click)="onSubmitCreateNewNote()" type="button"
+              class="btn btn-primary mt-2">Submit</button>
+            <button *ngIf="!(isAddMode$ | async)" (click)="onSubmitUpdateNote()" type="button"
+              class="btn btn-primary mt-2">Submit</button>
+            <button (click)="hideModal()" type="button" class="btn btn-danger mt-2">Annuler</button>
+          </div>
+        </form>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

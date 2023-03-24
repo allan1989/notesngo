@@ -1,0 +1,15 @@
+<ng-container *ngIf="(showRemoveNoteModal$ | async)">
+  <div class="fixed-top modal-fullscreen bg-secondary bg-opacity-25">
+    <div class="position-absolute top-50 start-50 translate-middle bg-white p-4 rounded-3">
+      <ng-container *ngFor="let note of selectedNote$ | async">
+        <p class="text-center">Supprimer la note suivante ?</p>
+        <p>{{ note.title }}</p>
+        <p style="height: 100px;overflow: hidden;">{{ note.body }}</p>
+        <div class="text-center">
+          <button class="btn btn-primary me-2" (click)='deleteNote(note.id)'>Supprimer</button>
+          <button class="btn btn-danger" (click)='hideDeleteNoteModal()'>Annuler</button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

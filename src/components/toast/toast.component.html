@@ -1,0 +1,9 @@
+<ng-container *ngIf="(isToastVisible$ | async)">
+  <div *ngIf="(isAddMode$| async)"
+    class="position-fixed bottom-0 start-50 translate-middle-x p-3 border border-success bg-success text-white"
+    style="z-index: 11">La note a été ajoutée !</div>
+
+  <div *ngIf="!(isAddMode$ | async)"
+    class="position-fixed bottom-0 start-50 translate-middle-x p-3 border border-success bg-success text-white"
+    style="z-index: 11">La note a été modifiée !</div>
+</ng-container>

@@ -64,7 +64,7 @@ describe('Selectors', () => {
     });
 
     it('return the initial mode of the addEditNoteModal (default mode is add)', () => {
-        const result = fromSelectors.AddEditNoteModalMode.projector(initialstate);
+        const result = fromSelectors.addEditNoteModalMode.projector(initialstate);
         expect(result).toBe(true);
     });
 

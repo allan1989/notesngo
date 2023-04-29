@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { showAddEditNoteToast, AddEditNoteModalMode } from 'src/app/reducers/selectors/selectors';
+import { showAddEditNoteToast, addEditNoteModalMode } from 'src/app/reducers/selectors/selectors';
 
 @Component({
   selector: 'app-toast',
@@ -19,6 +19,6 @@ export class ToastComponent implements OnInit {
 
   ngOnInit(): void {
     this.isToastVisible$ = this.store.pipe(select(showAddEditNoteToast));
-    this.isAddMode$ = this.store.pipe(select(AddEditNoteModalMode));
+    this.isAddMode$ = this.store.pipe(select(addEditNoteModalMode));
   }
 }

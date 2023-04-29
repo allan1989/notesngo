@@ -51,7 +51,7 @@ export const selectSingleNoteForModal = createSelector(
     if (notes && selectedNoteId) {
       return notes.filter((note: INote) => note.id === selectedNoteId)
     } else {
-      return notes
+      return []
     }
   }
 )
@@ -65,7 +65,7 @@ export const addEditNoteModal = createSelector(
 
 // When calling the modal AddEditNote
 // get the mode (Add or Edit)
-export const AddEditNoteModalMode = createSelector(
+export const addEditNoteModalMode = createSelector(
   selectNotesFeature,
   (notes) => notes.isAddMode
 )

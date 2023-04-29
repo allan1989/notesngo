@@ -3,11 +3,11 @@ import {
   selectNotes,
   selectSingleNoteForModal,
   addEditNoteModal,
-  AddEditNoteModalMode,
+  addEditNoteModalMode,
   getSelectedNoteId
 } from '../../app/reducers/selectors/selectors';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, distinct, filter, forkJoin, last, merge, mergeAll, withLatestFrom } from 'rxjs';
 import { INote } from 'src/services/note.model';
 import { showAddEditNoteModal } from 'src/app/reducers/actions/actions';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,13 +21,11 @@ import { PrioritiesListLabel, PrioritiesListValue } from 'src/services/note.mode
 })
 export class ModalAddEditNoteComponent implements OnInit {
 
-  public hasNotes$!: Observable<INote[]>;
   public showAddEditNoteModal$!: Observable<boolean>;
   public isAddMode$!: Observable<boolean>;
 
   public noteForm!: FormGroup;
-  public submitted = false;
-  public currentNote!: Observable<INote[]>;
+  public currentNote$!: Observable<INote[]>;
 
   public currentNotes!: INote[];
   public currentNoteId!: number;
@@ -42,10 +40,9 @@ export class ModalAddEditNoteComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.hasNotes$ = this.store.pipe(select(selectNotes));
     this.showAddEditNoteModal$ = this.store.pipe(select(addEditNoteModal));
-    this.isAddMode$ = this.store.pipe(select(AddEditNoteModalMode));
-    this.currentNote = this.store.pipe(select(selectSingleNoteForModal));
+    this.isAddMode$ = this.store.pipe(select(addEditNoteModalMode));
+    this.currentNote$ = this.store.pipe(select(selectSingleNoteForModal));
 
     this.store.pipe(select(selectNotes)).subscribe(
       notes => this.currentNotes = notes
@@ -61,13 +58,19 @@ export class ModalAddEditNoteComponent implements OnInit {
       priority: ['', [Validators.required]]
     });
 
-    this.isAddMode$.subscribe(
-      isAddMode => {
-        if (!isAddMode) {
-          this.patchFormFields()
-        }
-        else {
+    combineLatest([this.isAddMode$, this.currentNote$]).subscribe(
+      ([isAddMode, currentNote]) => {
+        //console.log(isAddMode, currentNote)
+        if (isAddMode) {
           this.noteForm.reset();
+          return;
+        } else {
+          this.noteForm.patchValue({
+            body: currentNote[0]?.body,
+            title: currentNote[0]?.title,
+            id: currentNote[0]?.id,
+            priority: currentNote[0]?.priority
+          })
         }
       }
     )
@@ -83,48 +86,23 @@ export class ModalAddEditNoteComponent implements OnInit {
     this.store.dispatch(showAddEditNoteModal({ showAddEditNoteModal: false }));
   }
 
-  createNewNote() {
+  onSubmitCreateNewNote() {
     if (this.noteForm.invalid) {
       return;
-    } else {
-      let id = Math.floor(Math.random() * Date.now());
-      this.noteForm.value.id = id;
-      this.noteService.addNote(this.noteForm.value);
-      this.noteForm.reset();
     }
+    this.noteForm.value.id = Math.floor(Math.random() * Date.now())
+    this.noteService.addNote(this.noteForm.value);
+    this.noteForm.reset();
   }
 
-  updateNote() {
-    let n = {
+  onSubmitUpdateNote() {
+    let newNote = {
       title: this.noteForm.value.title,
       body: this.noteForm.value.body,
       priority: this.noteForm.value.priority,
       id: this.currentNoteId
     }
+    this.noteService.updateNote(newNote);
     this.noteForm.reset();
-    this.noteService.updateNote(n);
-  }
-
-  patchFormFields() {
-    this.currentNote.subscribe(
-      note => {
-        this.noteForm.patchValue({
-          body: note[0]?.body,
-          title: note[0]?.title,
-          id: note[0]?.id,
-          priority: note[0]?.priority
-        })
-      }
-    )
-  }
-
-  onSubmitCreateNewNote() {
-    this.submitted = true;
-    this.createNewNote();
-  }
-
-  onSubmitUpdateNote() {
-    this.submitted = true;
-    this.updateNote();
   }
 }

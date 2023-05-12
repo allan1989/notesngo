@@ -5,7 +5,7 @@ import { NotePreviewComponent } from 'src/components/note-preview/note-preview.c
 import { NoteFullComponent } from 'src/components/note-full/note-full.component';
 import { NotFoundComponent } from 'src/components/not-found/not-found.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/notes', pathMatch: 'full' },
   {
     path: 'notes',

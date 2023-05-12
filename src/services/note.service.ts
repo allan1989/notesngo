@@ -68,7 +68,9 @@ export class NoteService {
     this.store.dispatch(showAddEditNoteToast({ showAddEditNoteToast: true }));
     this.router.navigate([`notes/${note.priority}`], { relativeTo: this.route })
     setTimeout(
-      () => this.store.dispatch(hideAddEditNoteToast()),
+      () => {
+        this.store.dispatch(hideAddEditNoteToast())
+      },
       2000
     )
   }

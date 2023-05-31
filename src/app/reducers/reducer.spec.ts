@@ -32,14 +32,6 @@ describe('NotesReducer', () => {
         expect(state.showRemoveNoteModal).toBe(false);
     });
 
-    it('should hide RemoveNoteModal', () => {
-        const action = actions.showRemoveNoteModal({
-            showRemoveNoteModal: false
-        });
-        const state = fromReducer.notesReducer(initialstate, action);
-        expect(state.showRemoveNoteModal).toBe(false);
-    });
-
     it('should remove note', () => {
         const newState: IState = {
             showRemoveNoteModal: false,

@@ -1,11 +1,12 @@
 <div class="row">
   <div class="col-4">
     <p>Aperçu:</p>
-    <div *ngIf='(notes$ | async )?.length === 0'>
+    <div id='no-notes-warning' *ngIf='(notes$ | async )?.length === 0'>
       Aucune note avec cette priorité.
     </div>
-    <ng-container *ngFor='let note of notes$ | async '>
-      <div [ngClass]="{'bg-light': note.id === this.selected}" class="p-2 border d-flex justify-content-between mb-1">
+    <div id='notes-container' *ngFor='let note of notes$ | async '>
+      <div [ngClass]="{'bg-light': note.id === this.selected}"
+        class="note-preview p-2 border d-flex justify-content-between mb-1">
         <a [routerLink]="[note.id]" style="width: 85%" (click)="handleSelectedNote(note)"
           class="text-decoration-none text-dark">
           <p class="mb-1 overflow-hidden" style="height: 22px;">
@@ -16,7 +17,8 @@
           </p>
         </a>
         <div class="d-flex flex-column">
-          <button (click)="showAddEditModal(note)" type="button" class="btn btn-outline-secondary d-flex p-1 mb-2">
+          <button (click)="showAddEditModal(note)" type="button"
+            class="btn-update-note btn btn-outline-secondary d-flex p-1 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil"
               viewBox="0 0 16 16">
               <path
@@ -35,7 +37,7 @@
           </button>
         </div>
       </div>
-    </ng-container>
+    </div>
   </div>
   <div class="col-8">
     <router-outlet></router-outlet>

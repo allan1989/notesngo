@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NotePreviewComponent } from './note-preview.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -10,12 +10,14 @@ import { of } from 'rxjs';
 import { INote, IState } from 'src/services/note.model';
 import * as selectors from '../../app/reducers/selectors/selectors';
 import * as actions from '../../app/reducers/actions/actions';
-
+import { Location } from '@angular/common';
+import { routes } from '../home/home-routing.module';
 
 describe('NotePreviewComponent', () => {
   let component: NotePreviewComponent;
   let fixture: ComponentFixture<NotePreviewComponent>;
   let router: Router;
+  let location: Location;
   let activatedRoute: ActivatedRoute;
   let service: NoteService;
   let store: MockStore<IState>;
@@ -24,7 +26,7 @@ describe('NotePreviewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [NotePreviewComponent],
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes(routes)],
       providers: [
         { provide: NoteService },
         provideMockStore({
@@ -49,6 +51,7 @@ describe('NotePreviewComponent', () => {
     router = TestBed.inject(Router);
     activatedRoute = TestBed.inject(ActivatedRoute);
     store = TestBed.inject(MockStore);
+    location = TestBed.inject(Location);
   });
 
   beforeEach(() => {
@@ -86,6 +89,15 @@ describe('NotePreviewComponent', () => {
     expect(expectedData[0].priority).toBe('haute');
     expect(expectedData[1].priority).toBe('haute');
   });
+
+  it('updates the URL with the correct priority', (fakeAsync(() => {
+    component.ngOnInit();
+    let routeParams;
+    activatedRoute.params.subscribe(params => routeParams = params)
+    router.navigate([`notes/${routeParams?.['priority']}`]);
+    tick();
+    expect(location.path()).toBe('/notes/haute');
+  })));
 
   it('creates a subscription for activatedRoute parameters ngOnInit()', () => {
     component.ngOnInit();
@@ -142,6 +154,6 @@ describe('NotePreviewComponent', () => {
     component.showDeleteNoteModal(2);
     expect(storeSpy).toHaveBeenCalledWith(action)
     expect(serviceSpy).toHaveBeenCalled();
-  })
+  });
 
 });

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HomeComponent } from './home.component';
 import { Router } from '@angular/router';
@@ -7,11 +7,14 @@ import { By } from '@angular/platform-browser';
 import { NoteService } from 'src/services/note.service';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Initialstate } from 'src/app/reducers';
+import { Location } from '@angular/common';
+import { routes } from '../home/home-routing.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let router: Router;
+  let location: Location;
   let service: NoteService;
   const initialState = Initialstate;
 
@@ -23,12 +26,13 @@ describe('HomeComponent', () => {
         provideMockStore({ initialState }),
 
       ],
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes(routes)],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
     service = TestBed.inject(NoteService);
     router = TestBed.inject(Router);
+    location = TestBed.inject(Location);
   });
 
   beforeEach(() => {
@@ -48,6 +52,12 @@ describe('HomeComponent', () => {
   it('creates Route dependency', () => {
     expect(router).toBeTruthy();
   });
+
+  it('navigates to the correct path on ngInit', fakeAsync(() => {
+    router.navigate(['']);
+    tick();
+    expect(location.path()).toBe('/notes')
+  }));
 
   it('defines the properties priorities', () => {
     const enumLength = Object.keys(component.priorities);
